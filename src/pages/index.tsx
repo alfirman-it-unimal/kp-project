@@ -34,7 +34,7 @@ const Home: NextPage = () => {
 
         // sex
         if (el.sex === "Laki - laki") temp.male = temp.male + 1;
-        if (el.sex === "Perempuan") temp.male = temp.male + 1;
+        if (el.sex === "Perempuan") temp.female = temp.female + 1;
       });
       setClassification(temp);
     });
@@ -54,10 +54,10 @@ const Home: NextPage = () => {
 
   return (
     <div className="container-card-category">
-      <Card color="blue" title="JUMLAH WARGA BERDASARKAN USIA" data={age} />
+      <Card color="blue" title="JUMLAH PENDUDUK BERDASARKAN USIA" data={age} />
       <Card
         color="brown"
-        title="JUMLAH WARGA BERDASARKAN JENIS KELAMIN"
+        title="JUMLAH PENDUDUK BERDASARKAN JENIS KELAMIN"
         data={sex}
       />
     </div>
