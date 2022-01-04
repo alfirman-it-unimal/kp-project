@@ -1,4 +1,4 @@
-import { Input } from "@/pages/Login";
+import { Input } from "@/pages/login";
 
 interface LoginInputsProps {
   handleChange: Function;
