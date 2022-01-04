@@ -15,7 +15,7 @@ const Home: NextPage = () => {
   });
 
   useEffect(() => {
-    firebaseReadData("population").then((data: any) => {
+    firebaseReadData("resident").then((data: any) => {
       let temp = {
         kids: 0,
         teens: 0,

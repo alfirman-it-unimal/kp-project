@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTypedSelector } from "@/config/redux";
 import { firebaseDeleteDocument, firebaseReadData } from "@/config/firebase";
 
-interface Population {
+interface Resident {
   address: string;
   date: string;
   email: string;
@@ -12,26 +12,20 @@ interface Population {
   name: string;
   nik: number;
   number: number;
-  sex: string
+  sex: string;
   status: string;
   createdAt: string;
 }
 
-type Populations = Population[];
+type Residents = Resident[];
 
-const Population: NextPage = () => {
+const Resident: NextPage = () => {
   const { isLogin } = useTypedSelector((state) => state.authReducer);
-  const [populations, setPopulations] = useState<Populations>([]);
+  const [residents, setResidents] = useState<Residents>([]);
 
   const getData = useCallback(() => {
-    firebaseReadData("population").then((res: any) => setPopulations(res));
+    firebaseReadData("resident").then((res: any) => setResidents(res));
   }, []);
-
-  const removePopulation = (id: string) => {
-    firebaseDeleteDocument("population", id)
-      .then(() => getData())
-      .catch((e) => console.log("gagal", e));
-  };
 
   useEffect(() => {
     getData();
@@ -39,7 +33,7 @@ const Population: NextPage = () => {
 
   return (
     <div className="container-penduduk">
-      <h3>DATA PENDUDUK</h3>
+      <h3>DATA CALON PENDUDUK</h3>
       <div className="container-main">
         <table className="text-gray-600">
           <thead>
@@ -54,7 +48,7 @@ const Population: NextPage = () => {
             </tr>
           </thead>
           <tbody>
-            {populations
+            {residents
               .sort((a, b) => {
                 if (a.createdAt > b.createdAt) return 1;
                 if (a.createdAt < b.createdAt) return -1;
@@ -69,12 +63,16 @@ const Population: NextPage = () => {
                   {isLogin && (
                     <td className="option">
                       <button id="edit">
-                        <Link href={"/population/" + pop.id}>
+                        <Link href={"/resident/" + pop.id}>
                           <i className="fas fa-edit" />
                         </Link>
                       </button>
                       <button
-                        onClick={() => removePopulation(pop.id)}
+                        onClick={() =>
+                          firebaseDeleteDocument("resident", pop.id)
+                            .then(() => getData())
+                            .catch((e) => console.log("gagal", e))
+                        }
                         id="remove"
                       >
                         <i className="fas fa-trash-alt" />
@@ -90,12 +88,16 @@ const Population: NextPage = () => {
   );
 };
 
-export default Population;
+export default Resident;
 
-const data = (pop: Population) => {
+const data = (pop: Resident) => {
   return [
     { id: "name", text: "Nama", value: pop.name },
-    { id: "date", text: "Tanggal lahir", value: new Date(pop.date).toLocaleDateString() },
+    {
+      id: "date",
+      text: "Tanggal lahir",
+      value: new Date(pop.date).toLocaleDateString(),
+    },
     { id: "address", text: "Alamat", value: pop.address },
     { id: "status", text: "Pekerjaan", value: pop.status },
     { id: "number", text: "NO HP", value: pop.number },

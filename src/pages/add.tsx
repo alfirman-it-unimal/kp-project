@@ -48,7 +48,7 @@ export default function Add() {
 
     form.createdAt = new Date(Date.now()).toISOString();
     
-    dispatch(addData(form, "tempPopulation",() => {
+    dispatch(addData(form, "temp",() => {
       alert("data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda");
       push("/");
     }))

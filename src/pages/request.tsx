@@ -34,7 +34,7 @@ const Request: NextPage = () => {
 
   const getData = useCallback(() => {
     dispatch({ type: ActionType.CHANGE_LOADING, payload: true });
-    firebaseReadData("tempPopulation")
+    firebaseReadData("temp")
       .then((data: any) => setRequests(data))
       .catch((e) => alert(e))
       .finally(() =>
@@ -54,7 +54,7 @@ const Request: NextPage = () => {
           key={req.id}
           onSubmit={(e) => {
             e.preventDefault();
-            dispatch(saveData(req, "tempPopulation", "population", getData));
+            dispatch(saveData(req, "temp", "resident", getData));
           }}
           className="container-main border-b-2"
         >
@@ -77,7 +77,7 @@ const Request: NextPage = () => {
           <div className="flex space-x-3 justify-end mt-5">
             <button
               onClick={() =>
-                firebaseDeleteDocument("tempPopulation", req.id)
+                firebaseDeleteDocument("temp", req.id)
                   .then(() => getData())
                   .catch((e) => console.log(e))
               }

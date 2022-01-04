@@ -16,13 +16,13 @@ type Data = {
 
 const Detail: NextPage = () => {
   const [data, setData] = useState<Data>([]);
-  const [population, setPopulation] = useState({})
+  const [resident, setResident] = useState({})
   const { query, push, replace }: any = useRouter();
   const dispatch = useDispatch()
   const { isLogin } = useTypedSelector((state)=> state.authReducer)
 
   const getData = useCallback(() => {
-    firebaseReadSingleData("population", query.detail)
+    firebaseReadSingleData("resident", query.detail)
     .then((response: any) => {
       const result = [
         { id: "name", text: "Nama", value: response?.name ,disable:false, type:"text" },
@@ -35,14 +35,14 @@ const Detail: NextPage = () => {
         { id: "address", text: "Alamat", value: response?.address ,disable:true, type:"text" },
       ];
       setData(result);
-      setPopulation(response)
+      setResident(response)
     })
     .catch((e) => console.log("error", e));
   },[query.detail])
 
   const changeValue = (e:ChangeEvent<HTMLInputElement>, idx:number) => {
     data[idx].value = e.target.value;
-    setPopulation({...population, [e.target.id]: e.target.value})
+    setResident({...resident, [e.target.id]: e.target.value})
     setData([...data]);
   }
 
@@ -60,7 +60,7 @@ const Detail: NextPage = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          dispatch(updateDoc("population", query.detail, population, push("/population")))
+          dispatch(updateDoc("resident", query.detail, resident, push("/resident")))
         }}
         className="container-main border-b-2"
       >
@@ -85,8 +85,8 @@ const Detail: NextPage = () => {
         <div className="flex space-x-3 justify-end mt-5">
           <button
             onClick={() =>
-              firebaseDeleteDocument("population", query.detail)
-                .then(() => push("/population"))
+              firebaseDeleteDocument("resident", query.detail)
+                .then(() => push("/resident"))
                 .catch((e) => console.log(e))
             }
             type="button"
