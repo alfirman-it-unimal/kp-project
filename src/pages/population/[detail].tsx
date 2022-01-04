@@ -38,7 +38,7 @@ const Detail: NextPage = () => {
       setPopulation(response)
     })
     .catch((e) => console.log("error", e));
-  },[])
+  },[query.detail])
 
   const changeValue = (e:ChangeEvent<HTMLInputElement>, idx:number) => {
     data[idx].value = e.target.value;
@@ -52,7 +52,7 @@ const Detail: NextPage = () => {
 
   useEffect(() => {
     if (!isLogin) replace("/");
-  }, [isLogin]);
+  }, [isLogin,replace]);
 
   return (
     <div className="container-penduduk">

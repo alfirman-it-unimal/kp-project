@@ -40,7 +40,7 @@ const Request: NextPage = () => {
       .finally(() =>
         dispatch({ type: ActionType.CHANGE_LOADING, payload: false })
       );
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     getData();

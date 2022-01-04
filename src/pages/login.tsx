@@ -35,7 +35,7 @@ const Login: NextPage = () => {
 
   useEffect(() => {
     if (isLogin) replace("/");
-  }, [isLogin]);
+  }, [isLogin, replace]);
 
   useEffect(() => {
     return () =>
