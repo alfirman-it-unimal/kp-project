@@ -1,0 +1,40 @@
+/* default  */
+button,
+button:focus,
+input,
+input:focus,
+textarea,
+textarea:focus,
+select,
+select:focus,
+span,
+span:focus,
+h1,
+h1:focus,
+h3,
+h3:focus,
+h4,
+h4:focus,
+h6,
+h6:focus p,
+p:focus,
+a {
+  outline: none;
+  text-decoration: none;
+}
+
+/* clears the 'X' from Internet Explorer */
+/* input.hide-clear[type=search]::-ms-clear,
+input.hide-clear[type=search]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0; 
+} */
+
+/* clears the 'X' from Chrome */
+input.hide-clear[type="search"]::-webkit-search-decoration,
+input.hide-clear[type="search"]::-webkit-search-cancel-button,
+input.hide-clear[type="search"]::-webkit-search-results-button,
+input.hide-clear[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
