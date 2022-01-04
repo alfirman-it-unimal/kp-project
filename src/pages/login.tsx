@@ -18,8 +18,8 @@ const Login: NextPage = () => {
   const { isLogin } = useTypedSelector((state) => state.authReducer);
 
   const [input, setInput] = useState<Input>({
-    username: "admin@admin.com",
-    password: "111111",
+    username: "",
+    password: "",
   });
 
   const submit = (e: SyntheticEvent) => {
@@ -40,8 +40,8 @@ const Login: NextPage = () => {
   useEffect(() => {
     return () =>
       setInput({
-        username: "admin@admin.com",
-        password: "111111",
+        username: "",
+        password: "",
       });
   }, []);
 
