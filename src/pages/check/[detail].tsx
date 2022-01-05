@@ -1,4 +1,10 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
@@ -105,8 +111,17 @@ const DetailCheck: NextPage = () => {
     },
   ];
 
-  const changeValue = (e: ChangeEvent<HTMLInputElement>, idx: number) => {
+  const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
     setResident({ ...resident, [e.target.id]: e.target.value });
+  };
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    const { provinsi, kota, kecamatan, kelurahan } = address;
+    resident.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
+    resident.date = new Date(resident.date).toISOString();
+    resident.createdAt = new Date(Date.now()).toISOString();
+    dispatch(updateDoc("resident", query.detail, resident, push("/resident")));
   };
 
   useEffect(() => {
@@ -120,15 +135,7 @@ const DetailCheck: NextPage = () => {
   return (
     <div className="container-penduduk">
       <h3 className="uppercase">{resident.name}</h3>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          dispatch(
-            updateDoc("resident", query.detail, resident, push("/resident"))
-          );
-        }}
-        className="container-main border-b-2"
-      >
+      <form onSubmit={(e) => submit(e)} className="container-main border-b-2">
         <div className="space-y-2 ">
           {inputs.map((el, i) => (
             <div key={el.id} className="flex">
@@ -141,7 +148,7 @@ const DetailCheck: NextPage = () => {
                 name={el.id}
                 type={el.type}
                 value={el.value}
-                onChange={(e) => changeValue(e, i)}
+                onChange={(e) => changeValue(e)}
                 disabled={resident.status !== "failed"}
               />
             </div>
