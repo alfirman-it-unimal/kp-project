@@ -9,6 +9,7 @@ import {
 import { useDispatch } from "react-redux";
 import { updateDoc } from "@/config/redux/action";
 import useAddress from "@/lib/useAddress";
+import status from "@/utils/status";
 
 interface Resident {
   address: string;
@@ -139,6 +140,7 @@ const DetailCheck: NextPage = () => {
                 type={el.type}
                 value={el.value}
                 onChange={(e) => changeValue(e, i)}
+                disabled={resident.status !== "failed"}
               />
             </div>
           ))}
@@ -150,6 +152,7 @@ const DetailCheck: NextPage = () => {
                   onChange={(e) =>
                     setResident({ ...resident, sex: e.target.value })
                   }
+                  disabled={resident.status !== "failed"}
                   checked={resident.sex === "Laki - laki"}
                   id="male"
                   value="Laki - laki"
@@ -160,6 +163,7 @@ const DetailCheck: NextPage = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <input
+                  disabled={resident.status !== "failed"}
                   onChange={(e) =>
                     setResident({ ...resident, sex: e.target.value })
                   }
@@ -178,6 +182,7 @@ const DetailCheck: NextPage = () => {
             <div className="flex-[3] flex space-x-3">
               {addressInputs.map((input, i) => (
                 <select
+                  disabled={resident.status !== "failed"}
                   key={i}
                   name={input.name}
                   value={input.data.selected.id || "default"}
@@ -200,11 +205,13 @@ const DetailCheck: NextPage = () => {
             <select
               disabled
               value={resident.status}
-              className="flex-[3] text-blue-500 font-semibold text-lg"
+              className={`${
+                status(resident.status).color
+              }  flex-[3] font-semibold text-lg`}
             >
-              {status.map((stat, i) => (
+              {stats.map((stat, i) => (
                 <option key={i} value={stat}>
-                  {stat}
+                  {status(stat).text}
                 </option>
               ))}
             </select>
@@ -212,6 +219,7 @@ const DetailCheck: NextPage = () => {
         </div>
         <div className="flex space-x-3 justify-end mt-5">
           <button
+            disabled={resident.status !== "failed"}
             onClick={() =>
               firebaseDeleteDocument("resident", query.detail)
                 .then(() => push("/resident"))
@@ -222,7 +230,11 @@ const DetailCheck: NextPage = () => {
           >
             Hapus
           </button>
-          <button type="submit" className="bg-blue-500 hover:bg-blue-600">
+          <button
+            disabled={resident.status !== "failed"}
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600"
+          >
             Simpan
           </button>
         </div>
@@ -233,4 +245,4 @@ const DetailCheck: NextPage = () => {
 
 export default DetailCheck;
 
-const status = ["pending", "waiting", "onprogress", "success", "failed"];
+const stats = ["pending", "waiting", "onprogress", "success", "failed"];

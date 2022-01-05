@@ -8,6 +8,7 @@ import {
 } from "@/config/firebase";
 import { useDispatch } from "react-redux";
 import { updateDoc } from "@/config/redux/action";
+import status from "@/utils/status";
 
 interface Resident {
   address: string;
@@ -167,11 +168,11 @@ const Detail: NextPage = () => {
               onChange={(e) =>
                 setResident((crr) => ({ ...crr, status: e.target.value }))
               }
-              className="flex-[3] text-blue-500 font-semibold text-lg"
+              className={`${status(resident.status).color} flex-[3] font-semibold text-lg`}
             >
-              {status.map((stat, i) => (
+              {stats.map((stat, i) => (
                 <option key={i} value={stat}>
-                  {stat}
+                  {status(stat).text}
                 </option>
               ))}
             </select>
@@ -200,4 +201,4 @@ const Detail: NextPage = () => {
 
 export default Detail;
 
-const status = ["pending", "waiting", "onprogress", "success", "failed"];
+const stats = ["pending", "waiting", "onprogress", "success", "failed"];
