@@ -125,10 +125,11 @@ const DetailCheck: NextPage = () => {
       !kelurahan.selected.id
     )
       return alert("alamat belum lengkap,\ninput ulang alamat");
-      
+
     resident.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
     resident.date = new Date(resident.date).toISOString();
     resident.createdAt = new Date(Date.now()).toISOString();
+    resident.status = "pending";
     dispatch(updateDoc("resident", query.detail, resident, push("/resident")));
   };
 
@@ -238,7 +239,6 @@ const DetailCheck: NextPage = () => {
           <textarea
             name="note"
             className="border w-full h-[300px] p-2 resize-none"
-            placeholder={`beritahu ${resident.name} apa saja yang kurang dan perlu ditambahkan\nmisal: NIK kamu tidak terdaftar DUKCAPIL...`}
             value={resident.note}
             disabled
           ></textarea>
