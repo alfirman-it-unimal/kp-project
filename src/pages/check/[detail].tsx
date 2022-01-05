@@ -118,6 +118,14 @@ const DetailCheck: NextPage = () => {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const { provinsi, kota, kecamatan, kelurahan } = address;
+    if (
+      !provinsi.selected.id ||
+      !kota.selected.id ||
+      !kecamatan.selected.id ||
+      !kelurahan.selected.id
+    )
+      return alert("alamat belum lengkap,\ninput ulang alamat");
+      
     resident.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
     resident.date = new Date(resident.date).toISOString();
     resident.createdAt = new Date(Date.now()).toISOString();
