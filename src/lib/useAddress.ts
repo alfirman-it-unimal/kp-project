@@ -1,116 +1,94 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
+interface Selected {
+  id: number;
+  name: string;
+}
+
 interface Data {
   data: { id: number; nama: string }[];
-  selected: string;
+  selected: Selected;
 }
 
 interface Address {
-  province: Data;
-  city: Data;
-  district: Data;
-  ward: Data;
+  provinsi: Data;
+  kota: Data;
+  kecamatan: Data;
+  kelurahan: Data;
 }
 
+type Name = "provinsi" | "kota" | "kecamatan" | "kelurahan";
+
 export default function useAddress() {
-  const [address, setAddress] = useState<Address | any>({
-    province: { data: [], selected: "" },
-    city: { data: [], selected: "" },
-    district: { data: [], selected: "" },
-    ward: { data: [], selected: "" },
+  const [address, setAddress] = useState<Address>({
+    provinsi: { data: [], selected: { id: 0, name: "" } },
+    kota: { data: [], selected: { id: 0, name: "" } },
+    kecamatan: { data: [], selected: { id: 0, name: "" } },
+    kelurahan: { data: [], selected: { id: 0, name: "" } },
   });
+
+  const fetchAddress = (name: Name, queryId: string) => {
+    let responseName = "";
+    if (name === "kota") responseName = "kota_kabupaten";
+    else responseName = name;
+
+    fetch(`https://dev.farizdotid.com/api/daerahindonesia/${name}${queryId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAddress((address: Address) => ({
+          ...address,
+          [name]: { ...address[name], data: data[responseName] },
+        }));
+      })
+      .catch((error) => console.log(error));
+  };
 
   const getProvinces = useCallback(() => {
     fetch("https://dev.farizdotid.com/api/daerahindonesia/provinsi")
       .then((res) => res.json())
       .then((data) =>
-        setAddress({
+        setAddress((address: Address) => ({
           ...address,
-          province: { ...address.province, data: data.provinsi },
-        })
+          provinsi: { ...address.provinsi, data: data.provinsi },
+        }))
       )
       .catch((error) => console.log(error));
   }, []);
-
-  const getCities = useCallback(
-    (id: number) => {
-      fetch(
-        "https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=" + id
-      )
-        .then((res) => res.json())
-        .then((data) =>
-          setAddress({
-            ...address,
-            city: { ...address.city, data: data.kota_kabupaten },
-          })
-        )
-        .catch((error) => console.log(error));
-    },
-    [address.province]
-  );
-  const getDistrics = useCallback(
-    (id: number) => {
-      fetch(
-        "https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=" + id
-      )
-        .then((res) => res.json())
-        .then((data) =>
-          setAddress({
-            ...address,
-            district: { ...address.district, data: data.kecamatan },
-          })
-        )
-        .catch((error) => console.log(error));
-    },
-    [address.city]
-  );
-
-  const getWards = useCallback(
-    (id: number) => {
-      fetch(
-        "https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=" +
-          id
-      )
-        .then((res) => res.json())
-        .then((data) =>
-          setAddress({
-            ...address,
-            ward: { ...address.ward, data: data.kelurahan },
-          })
-        )
-        .catch((error) => console.log(error));
-    },
-    [address.district]
-  );
 
   useEffect(() => {
     getProvinces();
   }, [getProvinces]);
 
-  useEffect(() => {
-    !!address.province.selected &&
-      getCities(parseInt(address.province.selected.split("-")[0]));
-  }, [getCities, address.province.selected]);
+  const changeOption = (e: ChangeEvent<HTMLSelectElement>, name: Name) => {
+    const target = address[name].data.find(
+      (el) => el.id === parseInt(e.target.value)
+    );
 
-  useEffect(() => {
-    !!address.city.selected &&
-      getDistrics(parseInt(address.city.selected.split("-")[0]));
-  }, [getCities, address.city.selected]);
+    if (!target) return alert("data not found");
 
-  useEffect(() => {
-    !!address.district.selected &&
-      getWards(parseInt(address.district.selected.split("-")[0]));
-  }, [getCities, address.district.selected]);
+    if (name === "provinsi") {
+      fetchAddress("kota", `?id_provinsi=${target?.id}`);
+      address.kecamatan = { data: [], selected: { id: 0, name: "" } };
+      address.kelurahan = { data: [], selected: { id: 0, name: "" } };
+    }
 
-  const changeOption = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (name === "kota") {
+      fetchAddress("kecamatan", `?id_kota=${target?.id}`);
+      address.kelurahan = { data: [], selected: { id: 0, name: "" } };
+    }
+
+    if (name === "kecamatan") {
+      fetchAddress("kelurahan", `?id_kecamatan=${target?.id}`);
+    }
+
     setAddress({
       ...address,
-      [e.target.name]: {
-        ...address[e.target.name],
-        selected: e.target.value,
+      [name]: {
+        ...address[name],
+        selected: { id: target?.id, name: target?.nama, query: "" },
       },
     });
   };
-  
+
   return { address, changeOption };
 }

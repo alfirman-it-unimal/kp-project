@@ -6,20 +6,30 @@ import { useRouter } from "next/router";
 
 interface Data {
   data: { id: number; nama: string }[];
-  selected: string;
+  selected: { id: number; name: string };
 }
 
-type Inputs = {
-  name: string;
+type AddressInputs = {
+  name: "provinsi" | "kota" | "kecamatan" | "kelurahan";
   text: string;
   data: Data;
 }[];
 
 export default function Add() {
-  const { push } = useRouter()
-  const dispatch = useDispatch()
+  const { push } = useRouter();
+  const dispatch = useDispatch();
   const { address, changeOption } = useAddress();
-  const [form, setForm] = useState({ nik: 0, name: "", email: "", number: 0, date: "", status: "", sex: "Laki - laki", address: "", createdAt:"" });
+  const [form, setForm] = useState({
+    nik: 0,
+    name: "",
+    email: "",
+    number: 0,
+    date: "",
+    status: "",
+    sex: "Laki - laki",
+    address: "",
+    createdAt: "",
+  });
 
   const inputs = [
     { id: "nik", label: "NIK", type: "number", value: form.nik },
@@ -30,39 +40,53 @@ export default function Add() {
     { id: "date", label: "Tanggal lahir", type: "date", value: form.date },
   ];
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, [e.target.name]: e.target.value });
+  const addressInputs: AddressInputs = [
+    { name: "provinsi", text: "Provinsi", data: address.provinsi },
+    { name: "kota", text: "Kota/Kabupaten", data: address.kota },
+    { name: "kecamatan", text: "Kecamatan", data: address.kecamatan },
+    { name: "kelurahan", text: "Kelurahan", data: address.kelurahan },
+  ];
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     const { nik, name, email, number, date, status } = form;
-    const { province, city, district, ward } = address;
+    const { provinsi, kota, kecamatan, kelurahan } = address;
 
-    if (!nik || !name || !email || !number || !date || !status || !province.selected || !city.selected || !district.selected || !ward.selected) {
+    if (
+      !nik ||
+      !name ||
+      !email ||
+      !number ||
+      !date ||
+      !status ||
+      !provinsi.selected.id ||
+      !kota.selected.id ||
+      !kecamatan.selected.id ||
+      !kelurahan.selected.id
+    ) {
       return alert("belum lengkap");
     }
 
-    form.address = `${ward.selected.split("-")[1]}, ${district.selected.split("-")[1]}, ${city.selected.split("-")[1]}, ${province.selected.split("-")[1]}`;
+    form.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
 
     form.date = new Date(form.date).toISOString();
 
     form.createdAt = new Date(Date.now()).toISOString();
-    
-    dispatch(addData(form, "temp",() => {
-      alert("data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda");
-      push("/");
-    }))
+
+    dispatch(
+      addData(form, "temp", () => {
+        alert(
+          "data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda"
+        );
+        push("/");
+      })
+    );
   };
 
-  const addressInputs: Inputs = [
-    { name: "province", text: "Provinsi", data: address.province },
-    { name: "city", text: "Kota/Kabupaten", data: address.city },
-    { name: "district", text: "Kecamatan", data: address.district },
-    { name: "ward", text: "Kelurahan", data: address.ward },
-  ];
-
-  console.log(form)
-  
   return (
     <div className="container-penduduk">
       <h3>TAMBAH DATA</h3>
@@ -82,26 +106,30 @@ export default function Add() {
           </div>
         ))}
         <div className="label-input flex items-center">
-          <p className="w-[200px] inline-block">
-            Jenis kelamin
-          </p>
+          <p className="w-[200px] inline-block">Jenis kelamin</p>
           <div className="flex space-x-6">
             <div className="flex items-center space-x-3">
-              <input onChange={(e)=>onChange(e)} defaultChecked id="male" value="Laki - laki" name="sex" type="radio"/>
+              <input
+                onChange={(e) => onChange(e)}
+                defaultChecked
+                id="male"
+                value="Laki - laki"
+                name="sex"
+                type="radio"
+              />
               <label htmlFor="male">Laki - laki</label>
             </div>
             <div className="flex items-center space-x-3">
-              <input onChange={(e)=>onChange(e)} id="female" value="Perempuan" name="sex" type="radio"/>
+              <input
+                onChange={(e) => onChange(e)}
+                id="female"
+                value="Perempuan"
+                name="sex"
+                type="radio"
+              />
               <label htmlFor="female">Perempuan</label>
             </div>
           </div>
-          <input
-            // onChange={(e) => onChange(e)}
-            // className="border w-1/2 px-px"
-            // id={input.id}
-            // name={input.id}
-            // type={input.type}
-          />
         </div>
         <div className="label-input flex items-center">
           <p className="w-[200px]">Alamat</p>
@@ -110,14 +138,14 @@ export default function Add() {
               <select
                 key={i}
                 name={input.name}
-                value={input.data.selected || "default"}
-                onChange={(e) => changeOption(e)}
+                value={input.data.selected.id || "default"}
+                onChange={(e) => changeOption(e, input.name)}
               >
                 <option value="default" disabled>
                   {input.text}
                 </option>
                 {input.data.data.map((option) => (
-                  <option key={option.id} value={`${option.id}-${option.nama}`}>
+                  <option key={option.id} value={option.id}>
                     {option.nama}
                   </option>
                 ))}
