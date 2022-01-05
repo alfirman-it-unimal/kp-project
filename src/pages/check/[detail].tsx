@@ -22,6 +22,7 @@ interface Resident {
   sex: string;
   job: string;
   status: string;
+  note?: string;
   createdAt: string;
 }
 
@@ -53,6 +54,7 @@ const DetailCheck: NextPage = () => {
     sex: "",
     job: "",
     status: "",
+    note: "",
     createdAt: "",
   });
 
@@ -216,6 +218,15 @@ const DetailCheck: NextPage = () => {
               ))}
             </select>
           </div>
+        </div>
+        <div className="mt-3">
+          <textarea
+            name="note"
+            className="border w-full h-[300px] p-2 resize-none"
+            placeholder={`beritahu ${resident.name} apa saja yang kurang dan perlu ditambahkan\nmisal: NIK kamu tidak terdaftar DUKCAPIL...`}
+            value={resident.note}
+            disabled
+          ></textarea>
         </div>
         <div className="flex space-x-3 justify-end mt-5">
           <button

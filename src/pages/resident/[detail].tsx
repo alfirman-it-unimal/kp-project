@@ -21,6 +21,7 @@ interface Resident {
   sex: string;
   job: string;
   status: string;
+  note?: string;
   createdAt: string;
 }
 
@@ -48,6 +49,7 @@ const Detail: NextPage = () => {
     sex: "",
     job: "",
     status: "",
+    note: "",
     createdAt: "",
   });
 
@@ -118,12 +120,6 @@ const Detail: NextPage = () => {
       .catch((e) => console.log("error", e));
   }, [query.detail]);
 
-  // const changeValue = (e:ChangeEvent<HTMLInputElement>, idx:number) => {
-  //   data[idx].value = e.target.value;
-  //   setResident({...resident, [e.target.id]: e.target.value})
-  //   setData([...data]);
-  // }
-
   useEffect(() => {
     getData();
   }, [getData]);
@@ -157,7 +153,6 @@ const Detail: NextPage = () => {
                 type={el.type}
                 value={el.value}
                 disabled={el.disable}
-                // onChange={(e)=>changeValue(e,i)}
               />
             </div>
           ))}
@@ -168,7 +163,9 @@ const Detail: NextPage = () => {
               onChange={(e) =>
                 setResident((crr) => ({ ...crr, status: e.target.value }))
               }
-              className={`${status(resident.status).color} flex-[3] font-semibold text-lg`}
+              className={`${
+                status(resident.status).color
+              } flex-[3] font-semibold text-lg`}
             >
               {stats.map((stat, i) => (
                 <option key={i} value={stat}>
@@ -177,6 +174,15 @@ const Detail: NextPage = () => {
               ))}
             </select>
           </div>
+        </div>
+        <div className="mt-3">
+          <textarea
+            name="note"
+            className="border w-full h-[300px] p-2 resize-none"
+            placeholder={`beritahu ${resident.name} apa saja yang kurang dan perlu ditambahkan\nmisal: NIK kamu tidak terdaftar DUKCAPIL...`}
+            value={resident.note}
+            onChange={(e) => setResident({ ...resident, note: e.target.value })}
+          ></textarea>
         </div>
         <div className="flex space-x-3 justify-end mt-5">
           <button
