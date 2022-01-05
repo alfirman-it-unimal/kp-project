@@ -113,9 +113,9 @@ const DetailCheck: NextPage = () => {
     getData();
   }, [getData]);
 
-  // useEffect(() => {
-  //   if (!isLogin) replace("/");
-  // }, [isLogin,replace]);
+  useEffect(() => {
+    if (isLogin) replace("/");
+  }, [isLogin, replace]);
 
   return (
     <div className="container-penduduk">

@@ -1,9 +1,10 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useAddress from "@/lib/useAddress";
 import { addData } from "@/config/redux/action";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
+import { useTypedSelector } from "@/config/redux";
 
 interface Data {
   data: { id: number; nama: string }[];
@@ -19,7 +20,9 @@ type AddressInputs = {
 const Register: NextPage = () => {
   const { push } = useRouter();
   const dispatch = useDispatch();
+  const { replace } = useRouter();
   const { address, changeOption } = useAddress();
+  const { isLogin } = useTypedSelector((state) => state.authReducer);
   const [form, setForm] = useState({
     nik: 0,
     name: "",
@@ -88,6 +91,10 @@ const Register: NextPage = () => {
       })
     );
   };
+
+  useEffect(() => {
+    if (isLogin) replace("/");
+  }, [isLogin, replace]);
 
   return (
     <div className="container-penduduk">

@@ -23,7 +23,7 @@ interface Resident {
 type Residents = Resident[];
 
 const Resident: NextPage = () => {
-  const { push } = useRouter();
+  const { push, replace } = useRouter();
   const { isLogin } = useTypedSelector((state) => state.authReducer);
   const [residents, setResidents] = useState<Residents>([]);
 
@@ -34,6 +34,10 @@ const Resident: NextPage = () => {
   useEffect(() => {
     getData();
   }, [getData]);
+
+  useEffect(() => {
+    if (!isLogin) replace("/");
+  }, [replace, isLogin]);
 
   return (
     <div className="container-penduduk">
@@ -75,7 +79,9 @@ const Resident: NextPage = () => {
                   ))}
                   <td className="flex items-center">
                     <span
-                      className={`${status(pop.status).bgColor} px-1 rounded-sm`}
+                      className={`${
+                        status(pop.status).bgColor
+                      } px-1 rounded-sm`}
                     >
                       {status(pop.status).text}
                     </span>

@@ -1,12 +1,13 @@
 import { firebaseReadData } from "@/config/firebase";
+import { useTypedSelector } from "@/config/redux";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 const Check: NextPage = () => {
   const [form, setForm] = useState({ email: "", nik: "" });
-
-  const { push } = useRouter();
+  const { isLogin } = useTypedSelector((state) => state.authReducer);
+  const { push, replace } = useRouter();
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -17,6 +18,10 @@ const Check: NextPage = () => {
       return alert("NIK dan Email tidak cocok!");
     push(`/check/${data[targetIndex].id}`);
   };
+
+  useEffect(() => {
+    if (isLogin) replace("/");
+  }, [isLogin, replace]);
 
   return (
     <div className="container-penduduk">

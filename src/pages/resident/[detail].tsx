@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
@@ -124,9 +124,9 @@ const Detail: NextPage = () => {
     getData();
   }, [getData]);
 
-  // useEffect(() => {
-  //   if (!isLogin) replace("/");
-  // }, [isLogin,replace]);
+  useEffect(() => {
+    if (!isLogin) replace("/");
+  }, [replace, isLogin]);
 
   return (
     <div className="container-penduduk">
