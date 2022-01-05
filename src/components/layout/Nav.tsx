@@ -9,8 +9,8 @@ export const Nav = () => {
         <nav>
           <ul>
             <li><NavLink link="/" activeClassname="active">Dashboard</NavLink></li>
+            <li><NavLink link="/register" activeClassname="active">Registrasi</NavLink></li>
             <li><NavLink link="/resident" activeClassname="active">Data Penduduk</NavLink></li>
-            <li><NavLink link="/add" activeClassname="active">Tambah Data</NavLink></li>
             {isLogin&&<li><NavLink link="/request" activeClassname="active">Permintaan Data</NavLink></li>}
           </ul>
         </nav>

@@ -89,7 +89,7 @@ export default function Add() {
 
   return (
     <div className="container-penduduk">
-      <h3>TAMBAH DATA</h3>
+      <h3>REGISTRASI</h3>
       <form onSubmit={(e) => onSubmit(e)} className="container-main space-y-2">
         {inputs.map((input, i) => (
           <div key={i} className="label-input">

@@ -25,26 +25,26 @@ const Detail: NextPage = () => {
     firebaseReadSingleData("resident", query.detail)
     .then((response: any) => {
       const result = [
-        { id: "name", text: "Nama", value: response?.name ,disable:false, type:"text" },
-        { id: "number", text: "NO HP", value: response?.number ,disable:false, type:"number" },
-        { id: "job", text: "Pekerjaan", value: response?.job ,disable:false, type:"text" },
-        { id: "nik", text: "NIK", value: response?.nik, disable:false, type:"number" },
-        { id: "email", text: "Email", value: response?.email ,disable:false, type:"text" },
+        { id: "name", text: "Nama", value: response?.name ,disable:true, type:"text" },
+        { id: "number", text: "NO HP", value: response?.number ,disable:true, type:"number" },
+        { id: "job", text: "Pekerjaan", value: response?.job ,disable:true, type:"text" },
+        { id: "nik", text: "NIK", value: response?.nik, disable:true, type:"number" },
+        { id: "email", text: "Email", value: response?.email ,disable:true, type:"text" },
         { id: "date", text: "Tanggal lahir", value: new Date(response?.date).toLocaleDateString() ,disable: true, type: "text" },
         { id: "sex", text: "Jenis kelamin", value: response?.sex ,disable:true, type:"text" },
         { id: "address", text: "Alamat", value: response?.address ,disable:true, type:"text" },
       ];
       setData(result);
-      setResident(response)
+      // setResident(response)
     })
     .catch((e) => console.log("error", e));
   },[query.detail])
 
-  const changeValue = (e:ChangeEvent<HTMLInputElement>, idx:number) => {
-    data[idx].value = e.target.value;
-    setResident({...resident, [e.target.id]: e.target.value})
-    setData([...data]);
-  }
+  // const changeValue = (e:ChangeEvent<HTMLInputElement>, idx:number) => {
+  //   data[idx].value = e.target.value;
+  //   setResident({...resident, [e.target.id]: e.target.value})
+  //   setData([...data]);
+  // }
 
   useEffect(() => {
     getData();
@@ -71,13 +71,13 @@ const Detail: NextPage = () => {
                 {el.text}
               </label>
               <input
-                className="flex-[3] border"
+                className="flex-[3] border px-2"
                 id={el.id}
                 name={el.id}
                 type={el.type}
                 value={el.value}
                 disabled={el.disable}
-                onChange={(e)=>changeValue(e,i)}
+                // onChange={(e)=>changeValue(e,i)}
               />
             </div>
           ))}

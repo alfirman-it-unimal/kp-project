@@ -42,6 +42,7 @@ const Resident: NextPage = () => {
               <th>NAMA</th>
               <th>TANGGAL LAHIR</th>
               <th>NO HP</th>
+              <th>Status</th>
               {isLogin && <th className="text-center">OPSI</th>}
             </tr>
           </thead>
@@ -58,6 +59,9 @@ const Resident: NextPage = () => {
                   {data(pop).map((el) => (
                     <td key={pop.id + el.id}>{el.value}</td>
                   ))}
+                  <td className="flex items-center">
+                    <span className="bg-green-400 text-white px-1 rounded-sm">Selesai</span>
+                  </td>
                   {isLogin && (
                     <td className="option">
                       <button id="edit">
