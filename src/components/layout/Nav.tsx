@@ -11,7 +11,7 @@ export const Nav = () => {
             <li><NavLink link="/" activeClassname="active">Dashboard</NavLink></li>
             <li><NavLink link="/register" activeClassname="active">Registrasi</NavLink></li>
             <li><NavLink link="/resident" activeClassname="active">Data Penduduk</NavLink></li>
-            {isLogin&&<li><NavLink link="/request" activeClassname="active">Permintaan Data</NavLink></li>}
+            <li><NavLink link="/check" activeClassname="active">Cek Status</NavLink></li>
           </ul>
         </nav>
       </aside>

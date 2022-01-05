@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import useAddress from "@/lib/useAddress";
 import { addData } from "@/config/redux/action";
 import { useRouter } from "next/router";
+import { NextPage } from "next";
 
 interface Data {
   data: { id: number; nama: string }[];
@@ -15,7 +16,7 @@ type AddressInputs = {
   data: Data;
 }[];
 
-export default function Add() {
+const Register: NextPage = () => {
   const { push } = useRouter();
   const dispatch = useDispatch();
   const { address, changeOption } = useAddress();
@@ -162,4 +163,6 @@ export default function Add() {
       </form>
     </div>
   );
-}
+};
+
+export default Register;

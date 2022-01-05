@@ -131,8 +131,6 @@ const Detail: NextPage = () => {
   //   if (!isLogin) replace("/");
   // }, [isLogin,replace]);
 
-  console.log(resident.status);
-
   return (
     <div className="container-penduduk">
       <h3 className="uppercase">{resident.name}</h3>
