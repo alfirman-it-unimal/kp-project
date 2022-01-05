@@ -211,17 +211,6 @@ section .container-card-category {
   padding: 20px;
 }
 
-.container-main #add-button {
-  background-color: var(--dark-blue);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 3px;
-  opacity: 0.8;
-  transition: 0.3s;
-  cursor: pointer;
-}
-
 .container-main #add-button:hover {
   opacity: 1;
 }
@@ -231,10 +220,6 @@ table {
   width: 100%;
   border: 1px solid var(--text-gray);
 }
-
-/* #tr-1{
-    background-color: var(--main-bg);
-} */
 
 table tr th {
   border: 1px solid var(--text-gray);
@@ -259,75 +244,6 @@ tbody tr:nth-child(odd) {
   background-color: var(--main-bg);
 }
 
-#search {
-  float: right;
-  display: flex;
-}
-#search input {
-  padding: 5px 10px;
-  border: none;
-  outline: none;
-  border: 1px solid var(--text-gray);
-  width: 150px;
-}
-#search button {
-  padding: 5px 10px;
-  border: none;
-  outline: none;
-  border: 1px solid var(--text-gray);
-  background-color: white;
-}
-
-#search button i {
-  color: black;
-}
-
-tr td button {
-  border: none;
-  padding: 8px 10px;
-  margin: 0 2px;
-  color: white;
-  opacity: 0.8;
-  transition: 0.3s;
-  cursor: pointer;
-}
-
-tr td button:hover {
-  opacity: 1;
-}
-
-.option {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#view {
-  background-color: goldenrod;
-}
-#edit {
-  background-color: greenyellow;
-}
-#remove {
-  background-color: salmon;
-}
-
-tfoot tr td {
-  padding: 10px;
-}
-
-tfoot tr td div {
-  display: inline;
-  float: right;
-}
-
-tfoot tr td div span {
-  background-color: var(--light-blue);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 3px;
-  margin: 0 10px;
-}
 
 .container-main #add-button,
 form button {

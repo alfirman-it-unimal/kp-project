@@ -28,6 +28,7 @@ export default function Add() {
     job: "",
     sex: "Laki - laki",
     address: "",
+    status: "pending",
     createdAt: "",
   });
 
@@ -78,7 +79,7 @@ export default function Add() {
     form.createdAt = new Date(Date.now()).toISOString();
 
     dispatch(
-      addData(form, "temp", () => {
+      addData(form, "resident", () => {
         alert(
           "data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda"
         );
