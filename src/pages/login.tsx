@@ -17,10 +17,7 @@ const Login: NextPage = () => {
   const { isLoading } = useTypedSelector((state) => state.generalReducer);
   const { isLogin } = useTypedSelector((state) => state.authReducer);
 
-  const [input, setInput] = useState<Input>({
-    username: "admin@admin.com",
-    password: "111111",
-  });
+  const [input, setInput] = useState<Input>({ username: "", password: "" });
 
   const submit = (e: SyntheticEvent) => {
     e.preventDefault();
