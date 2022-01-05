@@ -16,7 +16,7 @@ interface Request {
   nik: number;
   number: number;
   sex: string;
-  status: string;
+  job: string;
   createdAt: string;
 }
 
@@ -105,7 +105,7 @@ const data = (req: Request) => {
     { id: "email", text: "Email", value: req.email },
     { id: "number", text: "NO HP", value: req.number },
     { id: "date", text: "Tanggal lahir", value: new Date(req.date).toLocaleDateString() },
-    { id: "status", text: "Pekerjaan", value: req.status },
+    { id: "job", text: "Pekerjaan", value: req.job },
     { id: "address", text: "Alamat", value: req.address },
     { id: "sex", text: "Jenis kelamin", value: req.sex },
   ];

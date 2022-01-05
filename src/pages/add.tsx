@@ -25,7 +25,7 @@ export default function Add() {
     email: "",
     number: 0,
     date: "",
-    status: "",
+    job: "",
     sex: "Laki - laki",
     address: "",
     createdAt: "",
@@ -36,7 +36,7 @@ export default function Add() {
     { id: "name", label: "Nama", type: "text", value: form.name },
     { id: "email", label: "Email", type: "email", value: form.email },
     { id: "number", label: "NO HP", type: "number", value: form.number },
-    { id: "status", label: "Pekerjaan", type: "text", value: form.status },
+    { id: "job", label: "Pekerjaan", type: "text", value: form.job },
     { id: "date", label: "Tanggal lahir", type: "date", value: form.date },
   ];
 
@@ -53,7 +53,7 @@ export default function Add() {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const { nik, name, email, number, date, status } = form;
+    const { nik, name, email, number, date, job } = form;
     const { provinsi, kota, kecamatan, kelurahan } = address;
 
     if (
@@ -62,7 +62,7 @@ export default function Add() {
       !email ||
       !number ||
       !date ||
-      !status ||
+      !job ||
       !provinsi.selected.id ||
       !kota.selected.id ||
       !kecamatan.selected.id ||

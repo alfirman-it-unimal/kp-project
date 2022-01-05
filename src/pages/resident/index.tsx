@@ -13,7 +13,7 @@ interface Resident {
   nik: number;
   number: number;
   sex: string;
-  status: string;
+  job: string;
   createdAt: string;
 }
 
@@ -41,8 +41,6 @@ const Resident: NextPage = () => {
               <th className="text-center">NO</th>
               <th>NAMA</th>
               <th>TANGGAL LAHIR</th>
-              <th>ALAMAT</th>
-              <th>PEKERJAAN</th>
               <th>NO HP</th>
               {isLogin && <th className="text-center">OPSI</th>}
             </tr>
@@ -98,8 +96,6 @@ const data = (pop: Resident) => {
       text: "Tanggal lahir",
       value: new Date(pop.date).toLocaleDateString(),
     },
-    { id: "address", text: "Alamat", value: pop.address },
-    { id: "status", text: "Pekerjaan", value: pop.status },
     { id: "number", text: "NO HP", value: pop.number },
   ];
 };

@@ -27,7 +27,7 @@ const Detail: NextPage = () => {
       const result = [
         { id: "name", text: "Nama", value: response?.name ,disable:false, type:"text" },
         { id: "number", text: "NO HP", value: response?.number ,disable:false, type:"number" },
-        { id: "status", text: "Pekerjaan", value: response?.status ,disable:false, type:"text" },
+        { id: "job", text: "Pekerjaan", value: response?.job ,disable:false, type:"text" },
         { id: "nik", text: "NIK", value: response?.nik, disable:false, type:"number" },
         { id: "email", text: "Email", value: response?.email ,disable:false, type:"text" },
         { id: "date", text: "Tanggal lahir", value: new Date(response?.date).toLocaleDateString() ,disable: true, type: "text" },
