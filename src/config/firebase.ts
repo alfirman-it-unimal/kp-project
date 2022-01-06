@@ -1,7 +1,26 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  deleteDoc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -66,9 +85,31 @@ export const firebaseReadSingleData = (path: string, id: string) =>
     )
   );
 
-export const firebaseUpdateDocument = (path: string, id: string, data: Object) =>
+export const firebaseUpdateDocument = (
+  path: string,
+  id: string,
+  data: Object
+) =>
   new Promise(() =>
     setDoc(doc(getFirestore(), path, id), data)
       .then(() => console.log("sukses"))
       .catch(() => console.log("gagal"))
+  );
+
+export const firebaseUploadFile = (file: any, filename: string) =>
+  new Promise((resolve, reject) =>
+    uploadBytesResumable(ref(getStorage(), filename), file).on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+      },
+      (error) => reject(error),
+      () => {
+        getDownloadURL(
+          uploadBytesResumable(ref(getStorage(), filename), file).snapshot.ref
+        ).then((downloadURL) => resolve(downloadURL));
+      }
+    )
   );

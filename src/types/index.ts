@@ -12,6 +12,10 @@ export interface Resident {
   note?: string;
   createdAt: string;
   category: string;
+  file: {
+    name: string;
+    url: string;
+  };
 }
 
 export const initialResident: Resident = {
@@ -28,4 +32,8 @@ export const initialResident: Resident = {
   note: "",
   createdAt: "",
   category: "",
+  file: {
+    name: "",
+    url: "",
+  },
 };

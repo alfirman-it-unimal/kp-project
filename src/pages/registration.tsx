@@ -1,10 +1,12 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useAddress, { AddressData } from "@/lib/useAddress";
-import { addData } from "@/config/redux/action";
+import { addData, uploadFile } from "@/config/redux/action";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
+import { firebaseReadData } from "@/config/firebase";
+import { ActionType } from "@/config/redux/types";
 
 type AddressInputs = {
   name: "provinsi" | "kota" | "kecamatan" | "kelurahan";
@@ -18,6 +20,7 @@ const Registration: NextPage = () => {
   const { replace } = useRouter();
   const { address, changeOption } = useAddress();
   const { isLogin } = useTypedSelector((state) => state.authReducer);
+  const [file, setFile] = useState("");
   const [form, setForm] = useState({
     nik: 0,
     name: "",
@@ -30,6 +33,10 @@ const Registration: NextPage = () => {
     status: "pending",
     createdAt: "",
     category: "",
+    file: {
+      name: "",
+      url: "",
+    },
   });
 
   const inputs = [
@@ -51,26 +58,29 @@ const Registration: NextPage = () => {
   const onChange = (e: ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    dispatch({ type: ActionType.CHANGE_LOADING, payload: true });
 
     const { nik, name, email, number, date, job, category } = form;
     const { provinsi, kota, kecamatan, kelurahan } = address;
 
-    if (
-      !nik ||
-      !name ||
-      !email ||
-      !number ||
-      !date ||
-      !job ||
-      !category ||
-      !provinsi.selected.id ||
-      !kota.selected.id ||
-      !kecamatan.selected.id ||
-      !kelurahan.selected.id
-    ) {
+    if (!nik || !name || !email || !number || !date || !job || !category || !provinsi.selected.id || !kota.selected.id || !kecamatan.selected.id || !kelurahan.selected.id || !form.file.name) {
+      dispatch({ type: ActionType.CHANGE_LOADING, payload: false });
       return alert("belum lengkap");
+    }
+
+    const getData: any = await firebaseReadData("resident");
+
+    if (getData.some((data: any) => data.nik === nik)) {
+      dispatch({ type: ActionType.CHANGE_LOADING, payload: false });
+      return alert("NIK telah digunakan!");
+    }
+
+    if (getData.some((data: any) => data.email === email)) {
+      dispatch({ type: ActionType.CHANGE_LOADING, payload: false });
+      return alert("Email telah digunakan!");
     }
 
     form.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
@@ -81,9 +91,7 @@ const Registration: NextPage = () => {
 
     dispatch(
       addData(form, "resident", () => {
-        alert(
-          "data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda"
-        );
+        alert("data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda");
         push("/");
       })
     );
@@ -93,10 +101,9 @@ const Registration: NextPage = () => {
     if (isLogin) replace("/");
   }, [isLogin, replace]);
 
-  console.log(form.category);
-
   useEffect(() => {
-    return () =>
+    return () => {
+      setFile(Math.random().toString(36));
       setForm({
         nik: 0,
         name: "",
@@ -109,8 +116,30 @@ const Registration: NextPage = () => {
         status: "pending",
         createdAt: "",
         category: "",
+        file: {
+          name: "",
+          url: "",
+        },
       });
+    }
   }, []);
+
+  const changeFile = (e: any) => {
+    if (!form.nik) {
+      setFile(Math.random().toString(36));
+      return alert("masukkan NIK terlebih dahulu!");
+    }
+    const filename = `${form.nik}.rar`;
+    e.target.files?.length &&
+      dispatch(
+        uploadFile(e?.target.files[0], filename, (url: string) =>
+          setForm((crr): any => ({
+            ...crr,
+            file: { name: `${form.nik}.rar`, url },
+          }))
+        )
+      );
+  };
 
   return (
     <div className="container-penduduk">
@@ -198,6 +227,24 @@ const Registration: NextPage = () => {
               ))}
             </select>
           </div>
+        </div>
+        <div className="label-input">
+          <label className="w-[200px] inline-block" htmlFor="file">
+            Unggah berkas (*.rar)
+          </label>
+          <input
+            onChange={(e) => changeFile(e)}
+            id="file"
+            name="file"
+            type="file"
+            accept=".rar"
+            key={file || ""}
+          />
+          {form.file.url && (
+            <a href={form.file.url} className="text-blue-600 hover:underline">
+              {form.file.name}
+            </a>
+          )}
         </div>
         <div className="flex justify-end mt-10">
           <button type="submit" name="submit" className="bg-blue-400">

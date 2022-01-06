@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { firebaseAddData, firebaseSignIn, firebaseUpdateDocument } from "../firebase";
+import { firebaseAddData, firebaseSignIn, firebaseUpdateDocument, firebaseUploadFile } from "../firebase";
 import { Action, ActionType } from "./types";
 
 const { CHANGE_LOADING, CHANGE_LOGIN, SET_USER } = ActionType;
@@ -35,7 +35,18 @@ export const addData =
   };
 
 export const updateDoc =
-  (path: string, id: string, data: Object, cb?: Function) => () =>
+  (path: string, id: string, data: Object, cb?: Function) =>
+  (dispatch: Dispatch<Action>) =>
     firebaseUpdateDocument(path, id, data)
       .then(() => cb && cb())
       .catch((e) => alert(e));
+
+export const uploadFile =
+  (file: any, filename: string, cb: Function) =>
+  (dispatch: Dispatch<Action>) => {
+    dispatch({ type: CHANGE_LOADING, payload: true });
+    firebaseUploadFile(file, filename)
+      .then((res) => cb(res))
+      .catch((e) => console.log(e))
+      .finally(() => dispatch({ type: CHANGE_LOADING, payload: false }));
+  };

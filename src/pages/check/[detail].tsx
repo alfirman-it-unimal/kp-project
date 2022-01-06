@@ -4,7 +4,7 @@ import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
 import { firebaseDeleteDocument, firebaseReadSingleData } from "@/config/firebase";
 import { useDispatch } from "react-redux";
-import { updateDoc } from "@/config/redux/action";
+import { updateDoc, uploadFile } from "@/config/redux/action";
 import useAddress, { AddressData } from "@/lib/useAddress";
 import { initialResident, Resident } from "@/types";
 
@@ -17,6 +17,7 @@ type AddressInputs = {
 
 const DetailCheck: NextPage = () => {
   const [resident, setResident] = useState<Resident>();
+  const [file, setFile] = useState("");
   const { query, push, replace }: any = useRouter();
   const dispatch = useDispatch();
   const { address, changeOption } = useAddress();
@@ -71,7 +72,15 @@ const DetailCheck: NextPage = () => {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const { provinsi, kota, kecamatan, kelurahan } = address;
-    if (!provinsi.selected.name || !kota.selected.name || !kecamatan.selected.name || !kelurahan.selected.name) return alert("alamat belum lengkap,\ninput ulang alamat");
+    if (
+      !provinsi.selected.name ||
+      !kota.selected.name ||
+      !kecamatan.selected.name ||
+      !kelurahan.selected.name
+    ) {
+      setResident((crr): any => ({ ...crr, address: "" }));
+      return alert("alamat belum lengkap,\ninput ulang alamat");
+    }
 
     if (resident?.name) {
       resident.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
@@ -82,9 +91,29 @@ const DetailCheck: NextPage = () => {
     }
   };
 
+  const changeFile = (e: any) => {
+    if (!resident?.nik) {
+      setFile(Math.random().toString(36));
+      return alert("masukkan NIK terlebih dahulu!");
+    }
+    const filename = `${resident?.nik}.rar`;
+    e.target.files?.length &&
+      dispatch(
+        uploadFile(e?.target.files[0], filename, (url: string) =>
+          setResident((crr): any => ({
+            ...crr,
+            file: { name: `${resident?.nik}.rar`, url },
+          }))
+        )
+      );
+  };
+
   useEffect(() => {
     getData();
-    return () => setResident(initialResident)
+    return () => {
+      setResident(initialResident);
+      setFile(Math.random().toString(36));
+    };
   }, [getData]);
 
   useEffect(() => {
@@ -118,7 +147,7 @@ const DetailCheck: NextPage = () => {
               <div className="flex items-center space-x-3">
                 <input
                   onChange={(e) =>
-                    setResident((crr):any => ({ ...crr, sex: e.target.value }))
+                    setResident((crr): any => ({ ...crr, sex: e.target.value }))
                   }
                   disabled={resident?.status !== "failed"}
                   checked={resident?.sex === "Laki - laki"}
@@ -133,7 +162,7 @@ const DetailCheck: NextPage = () => {
                 <input
                   disabled={resident?.status !== "failed"}
                   onChange={(e) =>
-                    setResident((crr):any=> ({ ...crr, sex: e.target.value }))
+                    setResident((crr): any => ({ ...crr, sex: e.target.value }))
                   }
                   checked={resident?.sex === "Perempuan"}
                   id="female"
@@ -171,13 +200,46 @@ const DetailCheck: NextPage = () => {
           <div className="flex">
             <p className="flex-1">Keterangan</p>
             <div className="flex-[3]">
-              <select onChange={(e)=>setResident((crr):any=>({...crr, category:e.target.value}))} value={resident?.category}>
+              <select
+                disabled={resident?.status !== "failed"}
+                onChange={(e) =>
+                  setResident((crr): any => ({
+                    ...crr,
+                    category: e.target.value,
+                  }))
+                }
+                value={resident?.category}
+              >
                 {categories.map((cat, i) => (
                   <option key={i} value={cat}>
                     {cat}
                   </option>
                 ))}
               </select>
+            </div>
+          </div>
+          <div className="label-input flex">
+            <label className="flex-1" htmlFor="file">
+              Unggah berkas (*.rar)
+            </label>
+            <div className="flex-[3]">
+              <input
+                disabled={resident?.status !== "failed"}
+                onChange={(e) => changeFile(e)}
+                id="file"
+                name="file"
+                type="file"
+                accept=".rar"
+                key={file || ""}
+              />
+              {resident?.file.url && (
+                <a
+                  href={resident?.file.url}
+                  className="text-blue-600 hover:underline"
+                >
+                  {resident?.file.name}
+                </a>
+              )}
             </div>
           </div>
           <div className="flex">
@@ -189,7 +251,7 @@ const DetailCheck: NextPage = () => {
                 className={`${
                   status(resident?.status || "").bgColor
                 }  font-semibold text-lg`}
-                >
+              >
                 {stats.map((stat, i) => (
                   <option key={i} value={stat}>
                     {status(stat).text}

@@ -5,7 +5,7 @@ import { useTypedSelector } from "@/config/redux";
 import { firebaseDeleteDocument, firebaseReadSingleData } from "@/config/firebase";
 import { useDispatch } from "react-redux";
 import { updateDoc } from "@/config/redux/action";
-import {  initialResident, Resident } from "@/types";
+import { initialResident, Resident } from "@/types";
 
 const Detail: NextPage = () => {
   const { query, push, replace }: any = useRouter();
@@ -33,7 +33,7 @@ const Detail: NextPage = () => {
 
   useEffect(() => {
     getData();
-    return () => setResident(initialResident)
+    return () => setResident(initialResident);
   }, [getData]);
 
   useEffect(() => {
@@ -47,7 +47,8 @@ const Detail: NextPage = () => {
         className="container-main border-b-2"
         onSubmit={(e) => {
           e.preventDefault();
-          if(resident?.name)dispatch(updateDoc("resident", query.detail, resident, push("/resident")));
+          if (resident?.name)
+            dispatch(updateDoc("resident", query.detail, resident, push("/resident")));
         }}
       >
         <div className="space-y-2 ">
@@ -66,11 +67,27 @@ const Detail: NextPage = () => {
             </div>
           ))}
           <div className="flex">
+            <p className="flex-1">Berkas</p>
+            <div className="flex-[3]">
+              <a
+                className="text-blue-600 hover:underline"
+                href={resident?.file.url}
+              >
+                {resident?.file.name}
+              </a>
+            </div>
+          </div>
+          <div className="flex">
             <p className="flex-1">Status</p>
             <div className="flex-[3]">
               <select
                 value={resident?.status}
-                onChange={(e) =>setResident((crr):any => ({ ...crr, status: e.target.value }))}
+                onChange={(e) =>
+                  setResident((crr): any => ({
+                    ...crr,
+                    status: e.target.value,
+                  }))
+                }
                 className={`${
                   status(resident?.status || "pending").bgColor
                 } font-semibold text-lg`}
@@ -89,19 +106,21 @@ const Detail: NextPage = () => {
             name="note"
             value={resident?.note}
             className="border w-full h-[300px] p-2 resize-none"
-            onChange={(e) => setResident((crr):any => ({...crr,note: e.target.value}))}
+            onChange={(e) =>
+              setResident((crr): any => ({ ...crr, note: e.target.value }))
+            }
             placeholder={`beritahu ${resident?.name} apa saja yang kurang dan perlu ditambahkan\nmisal: NIK kamu tidak terdaftar DUKCAPIL...`}
           ></textarea>
         </div>
         <div className="flex space-x-3 justify-end mt-5">
           <button
-            onClick={() =>{
-              const confirm = (window.confirm(`Hapus data ${resident?.name}?`))
-              if(confirm)
+            onClick={() => {
+              const confirm = window.confirm(`Hapus data ${resident?.name}?`);
+              if (confirm)
                 firebaseDeleteDocument("resident", query.detail)
                   .then(() => push("/resident"))
-                  .catch((e) => console.log(e))}
-            }
+                  .catch((e) => console.log(e));
+            }}
             type="button"
             className="bg-red-500 hover:bg-red-600"
           >
