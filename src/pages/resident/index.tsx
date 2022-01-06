@@ -3,7 +3,6 @@ import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
 import { firebaseReadData } from "@/config/firebase";
 import { useRouter } from "next/router";
-import status from "@/utils/status";
 import { Resident } from "@/types";
 
 const Resident: NextPage = () => {
@@ -17,7 +16,7 @@ const Resident: NextPage = () => {
 
   useEffect(() => {
     getData();
-    return () => setResidents([])
+    return () => setResidents([]);
   }, [getData]);
 
   useEffect(() => {
@@ -89,3 +88,38 @@ const data = (pop: Resident) => {
     { id: "name", text: "Nama", value: pop.name },
   ];
 };
+
+function status(stat: string) {
+  switch (stat) {
+    case "pending":
+      return {
+        text: "Menunggu konfirmasi",
+        bgColor: "bg-gray-300",
+      };
+    case "waiting":
+      return {
+        text: "Dalam antrean",
+        bgColor: "bg-blue-300",
+      };
+    case "onprogress":
+      return {
+        text: "Diproses",
+        bgColor: "bg-yellow-300",
+      };
+    case "success":
+      return {
+        text: "Sukses",
+        bgColor: "bg-green-300",
+      };
+    case "failed":
+      return {
+        text: "Gagal",
+        bgColor: "bg-red-300",
+      };
+    default:
+      return {
+        text: "Menunggu konfirmasi",
+        bgColor: "bg-gray-300",
+      };
+  }
+}

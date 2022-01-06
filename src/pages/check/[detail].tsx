@@ -6,7 +6,6 @@ import { firebaseDeleteDocument, firebaseReadSingleData } from "@/config/firebas
 import { useDispatch } from "react-redux";
 import { updateDoc } from "@/config/redux/action";
 import useAddress, { AddressData } from "@/lib/useAddress";
-import status from "@/utils/status";
 import { initialResident, Resident } from "@/types";
 
 type AddressInputs = {
@@ -171,19 +170,21 @@ const DetailCheck: NextPage = () => {
           </div>
           <div className="flex">
             <p className="flex-1">Status</p>
-            <select
-              disabled
-              value={resident?.status}
-              className={`${
-                status(resident?.status || "").bgColor
-              }  flex-[3] font-semibold text-lg`}
-            >
-              {stats.map((stat, i) => (
-                <option key={i} value={stat}>
-                  {status(stat).text}
-                </option>
-              ))}
-            </select>
+            <div className="flex-[3]">
+              <select
+                disabled
+                value={resident?.status}
+                className={`${
+                  status(resident?.status || "").bgColor
+                }  font-semibold text-lg`}
+                >
+                {stats.map((stat, i) => (
+                  <option key={i} value={stat}>
+                    {status(stat).text}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
         <div className="mt-3">
@@ -223,3 +224,38 @@ const DetailCheck: NextPage = () => {
 export default DetailCheck;
 
 const stats = ["pending", "waiting", "onprogress", "success", "failed"];
+
+function status(stat: string) {
+  switch (stat) {
+    case "pending":
+      return {
+        text: "Menunggu konfirmasi",
+        bgColor: "bg-gray-300",
+      };
+    case "waiting":
+      return {
+        text: "Dalam antrean",
+        bgColor: "bg-blue-300",
+      };
+    case "onprogress":
+      return {
+        text: "Diproses",
+        bgColor: "bg-yellow-300",
+      };
+    case "success":
+      return {
+        text: "Sukses",
+        bgColor: "bg-green-300",
+      };
+    case "failed":
+      return {
+        text: "Gagal",
+        bgColor: "bg-red-300",
+      };
+    default:
+      return {
+        text: "Menunggu konfirmasi",
+        bgColor: "bg-gray-300",
+      };
+  }
+}

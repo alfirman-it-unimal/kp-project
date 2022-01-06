@@ -5,7 +5,6 @@ import { useTypedSelector } from "@/config/redux";
 import { firebaseDeleteDocument, firebaseReadSingleData } from "@/config/firebase";
 import { useDispatch } from "react-redux";
 import { updateDoc } from "@/config/redux/action";
-import status from "@/utils/status";
 import {  initialResident, Resident } from "@/types";
 
 const Detail: NextPage = () => {
@@ -119,3 +118,38 @@ const Detail: NextPage = () => {
 export default Detail;
 
 const stats = ["pending", "waiting", "onprogress", "success", "failed"];
+
+function status(stat: string) {
+  switch (stat) {
+    case "pending":
+      return {
+        text: "Menunggu konfirmasi",
+        bgColor: "bg-gray-300",
+      };
+    case "waiting":
+      return {
+        text: "Dalam antrean",
+        bgColor: "bg-blue-300",
+      };
+    case "onprogress":
+      return {
+        text: "Diproses",
+        bgColor: "bg-yellow-300",
+      };
+    case "success":
+      return {
+        text: "Sukses",
+        bgColor: "bg-green-300",
+      };
+    case "failed":
+      return {
+        text: "Gagal",
+        bgColor: "bg-red-300",
+      };
+    default:
+      return {
+        text: "Menunggu konfirmasi",
+        bgColor: "bg-gray-300",
+      };
+  }
+}
