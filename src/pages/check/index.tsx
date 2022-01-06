@@ -14,14 +14,17 @@ const Check: NextPage = () => {
     const data: any = await firebaseReadData("resident");
     const targetIndex = data.findIndex((el: any) => el.nik === form.nik);
     if (targetIndex === -1) return alert("NIK tidak ditemukan");
-    if (data[targetIndex].email !== form.email)
-      return alert("NIK dan Email tidak cocok!");
+    if (data[targetIndex].email !== form.email) return alert("NIK dan Email tidak cocok!");
     push(`/check/${data[targetIndex].id}`);
   };
 
   useEffect(() => {
     if (isLogin) replace("/");
   }, [isLogin, replace]);
+
+  useEffect(() => {
+    return () => setForm({ email: "", nik: "" })
+  }, [])
 
   return (
     <div className="container-penduduk">

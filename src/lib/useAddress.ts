@@ -1,20 +1,18 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
-interface Selected {
-  id: number;
-  name: string;
-}
-
-interface Data {
+export interface AddressData {
   data: { id: number; nama: string }[];
-  selected: Selected;
+  selected: {
+    id: number;
+    name: string;
+  };
 }
 
 interface Address {
-  provinsi: Data;
-  kota: Data;
-  kecamatan: Data;
-  kelurahan: Data;
+  provinsi: AddressData;
+  kota: AddressData;
+  kecamatan: AddressData;
+  kelurahan: AddressData;
 }
 
 type Name = "provinsi" | "kota" | "kecamatan" | "kelurahan";

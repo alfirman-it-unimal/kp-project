@@ -4,15 +4,17 @@ import getAge from "@/utils/getAge";
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 
+interface Classification {
+  kids: number;
+  teens: number;
+  adults: number;
+  elderlies: number;
+  male: number;
+  female: number;
+}
+
 const Home: NextPage = () => {
-  const [classification, setClassification] = useState({
-    kids: 0,
-    teens: 0,
-    adults: 0,
-    elderlies: 0,
-    male: 0,
-    female: 0,
-  });
+  const [classification, setClassification] = useState<Classification>();
 
   useEffect(() => {
     firebaseReadData("resident").then((data: any) => {
@@ -41,15 +43,15 @@ const Home: NextPage = () => {
   }, []);
 
   const age = [
-    { text: "ANAK - ANAK", value: classification.kids, icon: "fa-child" },
-    { text: "REMAJA", value: classification.teens, icon: "fa-user-graduate" },
-    { text: "DEWASA", value: classification.adults, icon: "fa-user-tie" },
-    { text: "LANSIA", value: classification.elderlies, icon: "fa-wheelchair" },
+    { text: "ANAK - ANAK", value: classification?.kids || 0, icon: "fa-child" },
+    { text: "REMAJA", value: classification?.teens || 0, icon: "fa-user-graduate" },
+    { text: "DEWASA", value: classification?.adults || 0, icon: "fa-user-tie" },
+    { text: "LANSIA", value: classification?.elderlies || 0, icon: "fa-wheelchair" },
   ];
 
   const sex = [
-    { text: "LAKI - LAKI", value: classification.male, icon: "fa-male" },
-    { text: "PEREMPUAN", value: classification.female, icon: "fa-female" },
+    { text: "LAKI - LAKI", value: classification?.male || 0, icon: "fa-male" },
+    { text: "PEREMPUAN", value: classification?.female || 0, icon: "fa-female" },
   ];
 
   return (

@@ -1,68 +1,27 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
-import {
-  firebaseDeleteDocument,
-  firebaseReadSingleData,
-} from "@/config/firebase";
+import { firebaseDeleteDocument, firebaseReadSingleData } from "@/config/firebase";
 import { useDispatch } from "react-redux";
 import { updateDoc } from "@/config/redux/action";
-import useAddress from "@/lib/useAddress";
+import useAddress, { AddressData } from "@/lib/useAddress";
 import status from "@/utils/status";
-
-interface Resident {
-  address: string;
-  date: string;
-  email: string;
-  id: string;
-  name: string;
-  nik: number;
-  number: number;
-  sex: string;
-  job: string;
-  status: string;
-  note?: string;
-  createdAt: string;
-}
-
-interface AdressData {
-  data: { id: number; nama: string }[];
-  selected: { id: number; name: string };
-}
+import { initialResident, Resident } from "@/types";
 
 type AddressInputs = {
   name: "provinsi" | "kota" | "kecamatan" | "kelurahan";
   text: string;
-  data: AdressData;
+  data: AddressData;
   default: string;
 }[];
 
 const DetailCheck: NextPage = () => {
-  const { address, changeOption } = useAddress();
+  const [resident, setResident] = useState<Resident>();
   const { query, push, replace }: any = useRouter();
   const dispatch = useDispatch();
+  const { address, changeOption } = useAddress();
   const { isLogin } = useTypedSelector((state) => state.authReducer);
-  const [resident, setResident] = useState<Resident>({
-    address: "",
-    date: "",
-    email: "",
-    id: "",
-    name: "",
-    nik: 0,
-    number: 0,
-    sex: "",
-    job: "",
-    status: "",
-    note: "",
-    createdAt: "",
-  });
 
   const getData = useCallback(() => {
     firebaseReadSingleData("resident", query.detail)
@@ -71,17 +30,12 @@ const DetailCheck: NextPage = () => {
   }, [query.detail]);
 
   const inputs = [
-    { id: "nik", text: "NIK", type: "number", value: resident.nik },
-    { id: "name", text: "Nama", type: "text", value: resident.name },
-    { id: "email", text: "Email", type: "email", value: resident.email },
-    { id: "number", text: "NO HP", type: "number", value: resident.number },
-    { id: "job", text: "Pekerjaan", type: "text", value: resident.job },
-    {
-      id: "date",
-      text: "Tanggal lahir",
-      type: "date",
-      value: resident?.date.split("T")[0],
-    },
+    { id: "nik", text: "NIK", type: "number", value: resident?.nik },
+    { id: "name", text: "Nama", type: "text", value: resident?.name },
+    { id: "email", text: "Email", type: "email", value: resident?.email },
+    { id: "number", text: "NO HP", type: "number", value: resident?.number },
+    { id: "job", text: "Pekerjaan", type: "text", value: resident?.job },
+    { id: "date", text: "Tanggal lahir", type: "date", value: resident?.date.split("T")[0] },
   ];
 
   const addressInputs: AddressInputs = [
@@ -89,52 +43,49 @@ const DetailCheck: NextPage = () => {
       name: "provinsi",
       text: "Provinsi",
       data: address.provinsi,
-      default: resident?.address.split(", ")[3],
+      default: resident?.address.split(", ")[3] || "",
     },
     {
       name: "kota",
       text: "Kota/Kabupaten",
       data: address.kota,
-      default: resident?.address.split(", ")[2],
+      default: resident?.address.split(", ")[2] || "",
     },
     {
       name: "kecamatan",
       text: "Kecamatan",
       data: address.kecamatan,
-      default: resident?.address.split(", ")[1],
+      default: resident?.address.split(", ")[1] || "",
     },
     {
       name: "kelurahan",
       text: "Kelurahan",
       data: address.kelurahan,
-      default: resident?.address.split(", ")[0],
+      default: resident?.address.split(", ")[0] || "",
     },
   ];
 
   const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setResident({ ...resident, [e.target.id]: e.target.value });
+    setResident((crr): any => ({ ...crr, [e.target.id]: e.target.value }));
   };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const { provinsi, kota, kecamatan, kelurahan } = address;
-    if (
-      !provinsi.selected.id ||
-      !kota.selected.id ||
-      !kecamatan.selected.id ||
-      !kelurahan.selected.id
-    )
-      return alert("alamat belum lengkap,\ninput ulang alamat");
+    if ( !provinsi.selected.id || !kota.selected.id || !kecamatan.selected.id || !kelurahan.selected.id) return alert("alamat belum lengkap,\ninput ulang alamat");
 
-    resident.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
-    resident.date = new Date(resident.date).toISOString();
-    resident.createdAt = new Date(Date.now()).toISOString();
-    resident.status = "pending";
-    dispatch(updateDoc("resident", query.detail, resident, push("/resident")));
+    if (resident?.name) {
+      resident.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
+      resident.date = new Date(resident.date).toISOString();
+      resident.createdAt = new Date(Date.now()).toISOString();
+      resident.status = "pending";
+      dispatch(updateDoc("resident", query.detail, resident, push("/resident")));
+    }
   };
 
   useEffect(() => {
     getData();
+    return () => setResident(initialResident)
   }, [getData]);
 
   useEffect(() => {
@@ -143,7 +94,7 @@ const DetailCheck: NextPage = () => {
 
   return (
     <div className="container-penduduk">
-      <h3 className="uppercase">{resident.name}</h3>
+      <h3 className="uppercase">{resident?.name}</h3>
       <form onSubmit={(e) => submit(e)} className="container-main border-b-2">
         <div className="space-y-2 ">
           {inputs.map((el, i) => (
@@ -158,7 +109,7 @@ const DetailCheck: NextPage = () => {
                 type={el.type}
                 value={el.value}
                 onChange={(e) => changeValue(e)}
-                disabled={resident.status !== "failed"}
+                disabled={resident?.status !== "failed"}
               />
             </div>
           ))}
@@ -168,10 +119,10 @@ const DetailCheck: NextPage = () => {
               <div className="flex items-center space-x-3">
                 <input
                   onChange={(e) =>
-                    setResident({ ...resident, sex: e.target.value })
+                    setResident((crr):any => ({ ...crr, sex: e.target.value }))
                   }
-                  disabled={resident.status !== "failed"}
-                  checked={resident.sex === "Laki - laki"}
+                  disabled={resident?.status !== "failed"}
+                  checked={resident?.sex === "Laki - laki"}
                   id="male"
                   value="Laki - laki"
                   name="sex"
@@ -181,11 +132,11 @@ const DetailCheck: NextPage = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <input
-                  disabled={resident.status !== "failed"}
+                  disabled={resident?.status !== "failed"}
                   onChange={(e) =>
-                    setResident({ ...resident, sex: e.target.value })
+                    setResident((crr):any=> ({ ...crr, sex: e.target.value }))
                   }
-                  checked={resident.sex === "Perempuan"}
+                  checked={resident?.sex === "Perempuan"}
                   id="female"
                   value="Perempuan"
                   name="sex"
@@ -200,7 +151,7 @@ const DetailCheck: NextPage = () => {
             <div className="flex-[3] flex space-x-3">
               {addressInputs.map((input, i) => (
                 <select
-                  disabled={resident.status !== "failed"}
+                  disabled={resident?.status !== "failed"}
                   key={i}
                   name={input.name}
                   value={input.data.selected.id || "default"}
@@ -222,9 +173,9 @@ const DetailCheck: NextPage = () => {
             <p className="flex-1">Status</p>
             <select
               disabled
-              value={resident.status}
+              value={resident?.status}
               className={`${
-                status(resident.status).color
+                status(resident?.status || "").bgColor
               }  flex-[3] font-semibold text-lg`}
             >
               {stats.map((stat, i) => (
@@ -238,14 +189,14 @@ const DetailCheck: NextPage = () => {
         <div className="mt-3">
           <textarea
             name="note"
-            className="border w-full h-[300px] p-2 resize-none"
-            value={resident.note}
+            className="border w-full h-[300px] p-2 resize-none text-gray-500"
+            value={resident?.note}
             disabled
           ></textarea>
         </div>
         <div className="flex space-x-3 justify-end mt-5">
           <button
-            disabled={resident.status !== "failed"}
+            disabled={resident?.status !== "failed"}
             onClick={() =>
               firebaseDeleteDocument("resident", query.detail)
                 .then(() => push("/resident"))
@@ -257,7 +208,7 @@ const DetailCheck: NextPage = () => {
             Hapus
           </button>
           <button
-            disabled={resident.status !== "failed"}
+            disabled={resident?.status !== "failed"}
             type="submit"
             className="bg-blue-500 hover:bg-blue-600"
           >

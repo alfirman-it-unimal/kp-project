@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { firebaseAddData, firebaseDeleteDocument, firebaseSignIn, firebaseUpdateDocument } from "../firebase";
+import { firebaseAddData, firebaseSignIn, firebaseUpdateDocument } from "../firebase";
 import { Action, ActionType } from "./types";
 
 const { CHANGE_LOADING, CHANGE_LOGIN, SET_USER } = ActionType;
@@ -34,20 +34,8 @@ export const addData =
       .finally(() => dispatch({ type: CHANGE_LOADING, payload: false }));
   };
 
-export const saveData =
-  (data: Object | any, from: string, to: string, cb?: Function) =>
-  async (dispatch: Dispatch<Action>) => {
-    dispatch({ type: CHANGE_LOADING, payload: true });
-    await firebaseAddData(data, to);
-    await firebaseDeleteDocument(from, data.id);
-    dispatch({ type: CHANGE_LOADING, payload: false });
-    cb && cb();
-  };
-
 export const updateDoc =
-  (path: string, id: string, data: Object, cb?: Function) =>
-    () => {
-      firebaseUpdateDocument(path, id, data)
-        .then(() => cb && cb())
-        .catch((e) => alert(e))
-      };
+  (path: string, id: string, data: Object, cb?: Function) => () =>
+    firebaseUpdateDocument(path, id, data)
+      .then(() => cb && cb())
+      .catch((e) => alert(e));

@@ -1,20 +1,15 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import useAddress from "@/lib/useAddress";
+import useAddress, {AddressData} from "@/lib/useAddress";
 import { addData } from "@/config/redux/action";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
 
-interface Data {
-  data: { id: number; nama: string }[];
-  selected: { id: number; name: string };
-}
-
 type AddressInputs = {
   name: "provinsi" | "kota" | "kecamatan" | "kelurahan";
   text: string;
-  data: Data;
+  data: AddressData;
 }[];
 
 const Register: NextPage = () => {
@@ -61,18 +56,7 @@ const Register: NextPage = () => {
     const { nik, name, email, number, date, job } = form;
     const { provinsi, kota, kecamatan, kelurahan } = address;
 
-    if (
-      !nik ||
-      !name ||
-      !email ||
-      !number ||
-      !date ||
-      !job ||
-      !provinsi.selected.id ||
-      !kota.selected.id ||
-      !kecamatan.selected.id ||
-      !kelurahan.selected.id
-    ) {
+    if (!nik || !name || !email || !number || !date || !job || !provinsi.selected.id || !kota.selected.id || !kecamatan.selected.id || !kelurahan.selected.id) {
       return alert("belum lengkap");
     }
 
@@ -84,9 +68,7 @@ const Register: NextPage = () => {
 
     dispatch(
       addData(form, "resident", () => {
-        alert(
-          "data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda"
-        );
+        alert("data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda");
         push("/");
       })
     );
@@ -95,6 +77,21 @@ const Register: NextPage = () => {
   useEffect(() => {
     if (isLogin) replace("/");
   }, [isLogin, replace]);
+
+  useEffect(() => {
+    return () => setForm({
+      nik: 0,
+      name: "",
+      email: "",
+      number: 0,
+      date: "",
+      job: "",
+      sex: "Laki - laki",
+      address: "",
+      status: "pending",
+      createdAt: "",
+    });
+  }, [])
 
   return (
     <div className="container-penduduk">
