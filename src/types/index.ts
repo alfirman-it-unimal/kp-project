@@ -1,5 +1,5 @@
 export interface Resident {
-  id?:string;
+  id?: string;
   address: string;
   date: string;
   email: string;
@@ -11,10 +11,11 @@ export interface Resident {
   status: string;
   note?: string;
   createdAt: string;
+  category: string;
 }
 
-export const initialResident:Resident = {
-  id:"",
+export const initialResident: Resident = {
+  id: "",
   address: "",
   date: "",
   email: "",
@@ -26,4 +27,5 @@ export const initialResident:Resident = {
   status: "",
   note: "",
   createdAt: "",
+  category: "",
 };

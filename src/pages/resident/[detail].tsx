@@ -28,6 +28,7 @@ const Detail: NextPage = () => {
     { id: "sex", text: "Jenis kelamin", type: "text", value: resident?.sex },
     { id: "address", text: "Alamat", type: "text", value: resident?.address },
     { id: "date", text: "Tanggal lahir", type: "date", value: resident?.date.split("T")[0] },
+    { id: "category", text: "Keterangan", type: "text", value: resident?.category },
   ];
 
   useEffect(() => {

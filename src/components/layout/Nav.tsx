@@ -21,7 +21,7 @@ export const Nav = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink link="/register" activeClassname="active">
+                <NavLink link="/registration" activeClassname="active">
                   Registrasi
                 </NavLink>
               </li>

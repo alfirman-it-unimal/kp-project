@@ -71,7 +71,7 @@ const DetailCheck: NextPage = () => {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const { provinsi, kota, kecamatan, kelurahan } = address;
-    if ( !provinsi.selected.id || !kota.selected.id || !kecamatan.selected.id || !kelurahan.selected.id) return alert("alamat belum lengkap,\ninput ulang alamat");
+    if (!provinsi.selected.name || !kota.selected.name || !kecamatan.selected.name || !kelurahan.selected.name) return alert("alamat belum lengkap,\ninput ulang alamat");
 
     if (resident?.name) {
       resident.address = `${kelurahan.selected.name}, ${kecamatan.selected.name}, ${kota.selected.name}, ${provinsi.selected.name}`;
@@ -169,6 +169,18 @@ const DetailCheck: NextPage = () => {
             </div>
           </div>
           <div className="flex">
+            <p className="flex-1">Keterangan</p>
+            <div className="flex-[3]">
+              <select onChange={(e)=>setResident((crr):any=>({...crr, category:e.target.value}))} value={resident?.category}>
+                {categories.map((cat, i) => (
+                  <option key={i} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="flex">
             <p className="flex-1">Status</p>
             <div className="flex-[3]">
               <select
@@ -259,3 +271,18 @@ function status(stat: string) {
       };
   }
 }
+
+const categories = [
+  "Akta Kelahiran",
+  "Akta Kematian",
+  "KTP Elektronik",
+  "KTP Hilang",
+  "KTP Rusak",
+  "Surat Pindah",
+  "Surat Datang",
+  "Pembuatan KK Baru",
+  "Persyaratan Peubahan KK",
+  "Pembuatan KIA",
+  "KIA Perpanjang",
+  "KIA Hilang",
+];

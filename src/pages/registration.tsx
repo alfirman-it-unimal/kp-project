@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import useAddress, {AddressData} from "@/lib/useAddress";
+import useAddress, { AddressData } from "@/lib/useAddress";
 import { addData } from "@/config/redux/action";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
@@ -12,7 +12,7 @@ type AddressInputs = {
   data: AddressData;
 }[];
 
-const Register: NextPage = () => {
+const Registration: NextPage = () => {
   const { push } = useRouter();
   const dispatch = useDispatch();
   const { replace } = useRouter();
@@ -29,6 +29,7 @@ const Register: NextPage = () => {
     address: "",
     status: "pending",
     createdAt: "",
+    category: "",
   });
 
   const inputs = [
@@ -53,10 +54,22 @@ const Register: NextPage = () => {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const { nik, name, email, number, date, job } = form;
+    const { nik, name, email, number, date, job, category } = form;
     const { provinsi, kota, kecamatan, kelurahan } = address;
 
-    if (!nik || !name || !email || !number || !date || !job || !provinsi.selected.id || !kota.selected.id || !kecamatan.selected.id || !kelurahan.selected.id) {
+    if (
+      !nik ||
+      !name ||
+      !email ||
+      !number ||
+      !date ||
+      !job ||
+      !category ||
+      !provinsi.selected.id ||
+      !kota.selected.id ||
+      !kecamatan.selected.id ||
+      !kelurahan.selected.id
+    ) {
       return alert("belum lengkap");
     }
 
@@ -68,7 +81,9 @@ const Register: NextPage = () => {
 
     dispatch(
       addData(form, "resident", () => {
-        alert("data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda");
+        alert(
+          "data anda telah masuk ke permintaan\nmohon tunggu 2x24 jam, admin akan mengonfirmasi data anda"
+        );
         push("/");
       })
     );
@@ -78,20 +93,24 @@ const Register: NextPage = () => {
     if (isLogin) replace("/");
   }, [isLogin, replace]);
 
+  console.log(form.category);
+
   useEffect(() => {
-    return () => setForm({
-      nik: 0,
-      name: "",
-      email: "",
-      number: 0,
-      date: "",
-      job: "",
-      sex: "Laki - laki",
-      address: "",
-      status: "pending",
-      createdAt: "",
-    });
-  }, [])
+    return () =>
+      setForm({
+        nik: 0,
+        name: "",
+        email: "",
+        number: 0,
+        date: "",
+        job: "",
+        sex: "Laki - laki",
+        address: "",
+        status: "pending",
+        createdAt: "",
+        category: "",
+      });
+  }, []);
 
   return (
     <div className="container-penduduk">
@@ -159,6 +178,27 @@ const Register: NextPage = () => {
             ))}
           </div>
         </div>
+        <div className="label-input flex items-center">
+          <p className="w-[200px]">Keterangan</p>
+          <div className="flex space-x-6">
+            <select
+              name="category"
+              value={form.category || "default"}
+              onChange={(e) =>
+                setForm((crr) => ({ ...crr, category: e.target.value }))
+              }
+            >
+              <option disabled value="default">
+                keterangan
+              </option>
+              {categories.map((cat, i) => (
+                <option value={cat} key={i}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         <div className="flex justify-end mt-10">
           <button type="submit" name="submit" className="bg-blue-400">
             Submit
@@ -169,4 +209,19 @@ const Register: NextPage = () => {
   );
 };
 
-export default Register;
+export default Registration;
+
+const categories = [
+  "Akta Kelahiran",
+  "Akta Kematian",
+  "KTP Elektronik",
+  "KTP Hilang",
+  "KTP Rusak",
+  "Surat Pindah",
+  "Surat Datang",
+  "Pembuatan KK Baru",
+  "Persyaratan Peubahan KK",
+  "Pembuatan KIA",
+  "KIA Perpanjang",
+  "KIA Hilang",
+];
