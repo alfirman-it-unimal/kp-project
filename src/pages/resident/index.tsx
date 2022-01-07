@@ -3,12 +3,12 @@ import { NextPage } from "next";
 import { useTypedSelector } from "@/config/redux";
 import { firebaseReadData } from "@/config/firebase";
 import { useRouter } from "next/router";
-import { Resident } from "@/types";
+import { Resident as ResidentType } from "@/types";
 
 const Resident: NextPage = () => {
   const { push, replace } = useRouter();
   const { isLogin } = useTypedSelector((state) => state.authReducer);
-  const [residents, setResidents] = useState<Resident[]>([]);
+  const [residents, setResidents] = useState<ResidentType[]>([]);
 
   const getData = useCallback(() => {
     firebaseReadData("resident").then((res: any) => setResidents(res));
@@ -81,7 +81,7 @@ const Resident: NextPage = () => {
 
 export default Resident;
 
-const data = (pop: Resident) => {
+const data = (pop: ResidentType) => {
   return [
     { id: "nik", text: "NIK", value: pop.nik },
     { id: "email", text: "Email", value: pop.email },
